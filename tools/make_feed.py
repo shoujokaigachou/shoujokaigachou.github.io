@@ -7,7 +7,6 @@ skip に入れた番号（手動で投稿済みのもの）は飛ばす。
 """
 import json
 import os
-import re
 import sys
 from datetime import date, datetime, time, timedelta, timezone
 from email.utils import format_datetime
@@ -47,10 +46,6 @@ def main():
             f.write("\n".join(out))
 
     write("feed.xml", "少女怪画帖 | Strange Girls' Sketchbook", released)
-    boards = sorted({x["board"] for x in items})
-    for b in boards:
-        slug = re.sub(r"[^a-z0-9]+", "-", b.lower()).strip("-")
-        write(f"feed-{slug}.xml", f"Strange Girls' Sketchbook: {b}", [r for r in released if r[1]["board"] == b])
     left = len(items) - len(released)
     print(f"{today}: 公開済み {len(released)} / 全 {len(items)}（残り {left}枚・約{-(-left // cfg['per_day'])}日分）")
 
