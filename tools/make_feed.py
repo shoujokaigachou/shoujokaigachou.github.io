@@ -26,7 +26,8 @@ def main():
     for i, x in enumerate(items):
         d = start + timedelta(days=i // cfg["per_day"])
         if d <= today:
-            released.append((d, x))
+            # 同じ日の中でも並び順どおりに出るよう、1枚ごとに1分ずらす
+            released.append((datetime.combine(d, time(6, i % cfg["per_day"]), JST), x))
 
     def write(name, title, rows):
         out = ['<?xml version="1.0" encoding="UTF-8"?>', '<rss version="2.0">', "<channel>",
@@ -35,7 +36,7 @@ def main():
                "<language>en</language>"]
         for d, x in reversed(rows):  # 新しい順に並べる
             link = f'{base}/w/{x["no"]}.html'
-            pub = format_datetime(datetime.combine(d, time(6, 0), JST))
+            pub = format_datetime(d)
             out += ["<item>", f'<title>{escape(x["title"])}</title>', f"<link>{link}</link>",
                     f'<guid isPermaLink="true">{link}</guid>',
                     f'<description>{escape(x["description"])}</description>',
