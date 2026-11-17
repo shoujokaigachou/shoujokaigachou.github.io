@@ -30,7 +30,7 @@ def main():
             released.append((datetime.combine(d, time(6, i % cfg["per_day"]), JST), x))
 
     def write(name, title, rows):
-        out = ['<?xml version="1.0" encoding="UTF-8"?>', '<rss version="2.0">', "<channel>",
+        out = ['<?xml version="1.0" encoding="UTF-8"?>', '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">', "<channel>",
                f"<title>{escape(title)}</title>", f"<link>{base}/</link>",
                "<description>Strange Girls' Sketchbook. Hand-drawn by a 10-year-old.</description>",
                "<language>en</language>"]
@@ -41,6 +41,7 @@ def main():
                     f'<guid isPermaLink="true">{link}</guid>',
                     f'<description>{escape(x["description"])}</description>',
                     f'<enclosure url="{base}/img/{x["no"]}.jpg" length="{x["bytes"]}" type="image/jpeg"/>',
+                    f'<media:content url="{base}/img/{x["no"]}.jpg" type="image/jpeg" medium="image"/>',
                     f"<pubDate>{pub}</pubDate>", "</item>"]
         out += ["</channel>", "</rss>", ""]
         with open(os.path.join(ROOT, name), "w", encoding="utf-8") as f:
