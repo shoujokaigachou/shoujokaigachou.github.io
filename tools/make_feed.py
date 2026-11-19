@@ -14,6 +14,7 @@ from xml.sax.saxutils import escape
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 JST = timezone(timedelta(hours=9))
+FEED_WINDOW = 14  # RSSに載せる枚数（1日2枚で7日分）
 
 
 def main():
@@ -34,7 +35,8 @@ def main():
                f"<title>{escape(title)}</title>", f"<link>{base}/</link>",
                "<description>Strange Girls' Sketchbook. Hand-drawn by a 10-year-old.</description>",
                "<language>en</language>"]
-        for d, x in reversed(rows):  # 新しい順に並べる
+        # Pinterestはファイルの上から順にピンを作るので、古い順に並べる。末尾が埋もれないよう直近分だけ載せる
+        for d, x in rows[-FEED_WINDOW:]:
             link = f'{base}/w/{x["no"]}.html'
             pub = format_datetime(d)
             out += ["<item>", f'<title>{escape(x["title"])}</title>', f"<link>{link}</link>",
